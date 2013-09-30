@@ -8,7 +8,6 @@ import org.beatnikstree.cefconnect.util.StringUtil;
 
 /***
  * 
- * 
  * NOTE: CEFConnect URL with full parameter list
  * http://www.cefconnect.com/Resources/Funds/?props=Ticker,Name,DistributionRateNAV,LastUpdated,Discount,DistributionRatePrice,ReturnOnNAV,CategoryId,CategoryName,IsManagedDistribution,Price,PriceChange,NAV,NAVPublished,Cusip
  * 
@@ -16,7 +15,9 @@ import org.beatnikstree.cefconnect.util.StringUtil;
 class CEFTickerExtractor {
 	
 	def List<CEFTicker> tickers = new ArrayList<CEFTicker>();
+	
 	String jsonTickersUrl = "http://www.cefconnect.com/Resources/Funds/?props=Ticker"
+	def htmlParser
 	def json
 	
 	public init(){
@@ -28,18 +29,15 @@ class CEFTickerExtractor {
 	}
 	
 	private void populateTickers(){
+		def valueExtractor = new CEFTickerValueExtractor()
 		json.each {
 			def ticker = new CEFTicker()
 			ticker.ticker = it.Ticker
-			def valueExtractor = new CEFTickerValueExtractor()
 			valueExtractor.ticker = ticker
 			valueExtractor.init()
 			valueExtractor.extract()
-			this.tickers.add(valueExtractor.ticker)
+			valueExtractor.ticker.save(flush: true)
 		}
 	}
 	
-	public static void main(String args){
-		
-	}
 }

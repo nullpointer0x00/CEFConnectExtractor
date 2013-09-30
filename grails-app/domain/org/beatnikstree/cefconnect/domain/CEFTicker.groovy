@@ -3,12 +3,10 @@ package org.beatnikstree.cefconnect.domain
 class CEFTicker {
 
 	String ticker
-	def currentPremium = ""
-	def sixMonthPremium = ""
-	def oneYearPremium = ""
-	def threeYearPremium = ""
-	def fiveYearPremium = ""
+	String currentPremium
+	String sixMonthPremium
+	String oneYearPremium
+	String threeYearPremium
+	String fiveYearPremium 
 	
-    static constraints = {
-    }
 }

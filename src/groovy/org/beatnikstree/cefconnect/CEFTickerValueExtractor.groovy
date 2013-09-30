@@ -33,7 +33,7 @@ class CEFTickerValueExtractor {
 			ticker.oneYearPremium = oneYearPremium
 			ticker.threeYearPremium = threeYearPremium
 			ticker.fiveYearPremium = fiveYearPremium
-			log.info "${currentPremium} ${sixMonthPremium} ${oneYearPremium} ${threeYearPremium} ${fiveYearPremium}"
+			log.info " ${currentPremium} ${sixMonthPremium} ${oneYearPremium} ${threeYearPremium} ${fiveYearPremium}"
 			return ticker
 		}
 	}
