@@ -28,7 +28,6 @@ class CEFTickerExtractor {
 	}
 	
 	private void populateTickers(){
-		int i = 0;
 		json.each {
 			def ticker = new CEFTicker()
 			ticker.ticker = it.Ticker
@@ -36,12 +35,7 @@ class CEFTickerExtractor {
 			valueExtractor.ticker = ticker
 			valueExtractor.init()
 			valueExtractor.extract()
-			println valueExtractor.ticker.ticker
 			this.tickers.add(valueExtractor.ticker)
-			i++
-			if(i == 5){
-				return
-			}
 		}
 	}
 	

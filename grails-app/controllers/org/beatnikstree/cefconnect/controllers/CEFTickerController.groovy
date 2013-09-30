@@ -27,18 +27,18 @@ class CEFTickerController {
 		writeTable()
 	}
 	
-	private test() {
+	private writeTable() {
 		def html = ""
 		if(tickerList != null){
 		html = "<table>"
-		for(def i = 0; i < list.size(); i++){
+		for(def i = 0; i < tickerList.size(); i++){
 			html += "<tr>"
-			html += "<tr>" + list.get(i).ticker + "</tr>"
-			html += "<tr>" + list.get(i).currentPremium + "</tr>"
-			html += "<tr>" + list.get(i).sixMonthPremium + "</tr>"
-			html += "<tr>" + list.get(i).oneYearPremium + "</tr>"
-			html += "<tr>" + list.get(i).threeYearPremium + "</tr>"
-			html += "<tr>" + list.get(i).fiveYearPremium + "</tr>"
+			html += "<td>" + tickerList.get(i).ticker + "</td>"
+			html += "<td>" + tickerList.get(i).currentPremium + "</td>"
+			html += "<td>" + tickerList.get(i).sixMonthPremium + "</td>"
+			html += "<td>" + tickerList.get(i).oneYearPremium + "</td>"
+			html += "<td>" + tickerList.get(i).threeYearPremium + "</td>"
+			html += "<td>" + tickerList.get(i).fiveYearPremium + "</td>"
 			html += "</tr>"
 		}
 		html += "</table>"

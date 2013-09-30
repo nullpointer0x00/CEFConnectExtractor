@@ -22,21 +22,19 @@ class CEFTickerValueExtractor {
 	}
 	
 	public CEFTicker extract(){
-		log.info "in extractor"
 		if(htmlParser != null){
-			def cefTicker = new CEFTicker()
 			def currentPremium =  htmlParser.'**'.find{ it.@id == SUMMARY_GRID_ID }.tr[1].td[3]
 			def sixMonthPremium = htmlParser.'**'.find{ it.@id == DISCOUNT_GRID_ID }.tr[1].td[1]
 			def oneYearPremium = htmlParser.'**'.find{ it.@id == DISCOUNT_GRID_ID }.tr[2].td[1]
 			def threeYearPremium = htmlParser.'**'.find{ it.@id == DISCOUNT_GRID_ID }.tr[3].td[1]
 			def fiveYearPremium = htmlParser.'**'.find{ it.@id == DISCOUNT_GRID_ID }.tr[4].td[1]
-			cefTicker.currentPremium = currentPremium
-			cefTicker.sixMonthPremium = sixMonthPremium
-			cefTicker.oneYearPremium = oneYearPremium
-			cefTicker.threeYearPremium = threeYearPremium
-			cefTicker.fiveYearPremium = fiveYearPremium
+			ticker.currentPremium = currentPremium
+			ticker.sixMonthPremium = sixMonthPremium
+			ticker.oneYearPremium = oneYearPremium
+			ticker.threeYearPremium = threeYearPremium
+			ticker.fiveYearPremium = fiveYearPremium
 			log.info "${currentPremium} ${sixMonthPremium} ${oneYearPremium} ${threeYearPremium} ${fiveYearPremium}"
-			return cefTicker
+			return ticker
 		}
 	}
 	
