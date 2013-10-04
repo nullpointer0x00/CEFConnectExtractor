@@ -42,11 +42,12 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
         // runtime 'mysql:mysql-connector-java:5.1.22'
-		//compile 'org.apache.poi:poi:3.6'
+		compile 'org.apache.poi:poi:3.6'
     }
     plugins {
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.8.3"
+		runtime ":jquery-datatables:1.7.5"
         runtime ":resources:1.2"
 
         // Uncomment these (or add new ones) to enable additional resources capabilities

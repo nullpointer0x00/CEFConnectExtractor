@@ -8,5 +8,8 @@ class CEFTicker {
 	String oneYearPremium
 	String threeYearPremium
 	String fiveYearPremium 
+	static constraints = {
+		ticker unique: true
+	}
 	
 }

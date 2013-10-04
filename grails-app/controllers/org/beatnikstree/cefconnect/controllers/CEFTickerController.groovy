@@ -19,21 +19,42 @@ class CEFTickerController {
 	}
 	
 	def refreshTickers() {
+		log.info "refreshTickers"
 		def extractor = new CEFTickerExtractor()
 		extractor.init()
 		extractor.tickers 		
-		writeTable()
 	}
 	
-	def downloadExcelDocument = {
+	def downloadExcelDocument() {
+		log.info "download Excel Document"
 		def documentBuilder = new CEFXlsDocumentBuilder()
-		log.info "v1"
 		documentBuilder.tickerList = CEFTicker.list()
-		documentBuilder.createXlsxDocument()
-		
-		//TODO: write response for download
+		def filePath = documentBuilder.createXlsxDocument()
+		log.info "fileName: ${filePath}"
+		File f = new File(filePath)
+		response.setContentType("application/octet-stream")
+		response.setHeader("Content-disposition", "attachment;filename=CEFConnect.xls")
+		response.outputStream << f.newInputStream()
 	}
 	
+	
+	def tickerData() {
+		def tickerList = CEFTicker.findAll()
+		def json = '{ "aaData": [ '
+		if(tickerList != null){
+			for(def i = 0; i < tickerList.size(); i++){
+				json += '["' + tickerList.get(i).ticker + '",'
+				json += '"' + tickerList.get(i).currentPremium + '",'
+				json += '"' + tickerList.get(i).sixMonthPremium + '",'
+				json += '"' + tickerList.get(i).oneYearPremium + '",'
+				json += '"' + tickerList.get(i).threeYearPremium + '",'
+				json += '"' + tickerList.get(i).fiveYearPremium + '"],'
+			}
+			json = json.substring(0, json.length() -1)
+		}
+		json += "] }"
+		render json
+	}
 	
 	private writeTable() {
 		def html = ""
@@ -54,6 +75,5 @@ class CEFTickerController {
 		render html
 		}
 	}
-	
 	
 }

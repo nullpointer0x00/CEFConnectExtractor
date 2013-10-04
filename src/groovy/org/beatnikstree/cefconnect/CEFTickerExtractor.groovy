@@ -36,8 +36,16 @@ class CEFTickerExtractor {
 			valueExtractor.ticker = ticker
 			valueExtractor.init()
 			valueExtractor.extract()
-			valueExtractor.ticker.save(flush: true)
+			valueExtractor.ticker.save()
 		}
+//		for(int i = 0; i < 4 ; i++ ){
+//			def ticker = new CEFTicker()
+//			ticker.ticker = json.get(i).Ticker
+//			valueExtractor.ticker = ticker
+//			valueExtractor.init()
+//			valueExtractor.extract()
+//			valueExtractor.ticker.save()
+//		}
 	}
 	
 }

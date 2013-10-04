@@ -11,6 +11,7 @@ class CEFXlsDocumentBuilder {
 	
 	def tickerList
 	
+	
 	def createXlsxDocument(){
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet();
@@ -40,6 +41,6 @@ class CEFXlsDocumentBuilder {
 		FileOutputStream fos = new FileOutputStream(f)
 		wb.write(fos)
 		fos.close()
-		
+		f.getAbsolutePath()
 	}
 }
