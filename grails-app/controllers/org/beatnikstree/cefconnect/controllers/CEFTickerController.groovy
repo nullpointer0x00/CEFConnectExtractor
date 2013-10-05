@@ -19,18 +19,18 @@ class CEFTickerController {
 	}
 	
 	def refreshTickers() {
-		log.info "refreshTickers"
+		log.error "refreshTickers"
 		def extractor = new CEFTickerExtractor()
 		extractor.init()
 		extractor.tickers 		
 	}
 	
 	def downloadExcelDocument() {
-		log.info "download Excel Document"
+		log.error "download Excel Document"
 		def documentBuilder = new CEFXlsDocumentBuilder()
 		documentBuilder.tickerList = CEFTicker.list()
 		def filePath = documentBuilder.createXlsxDocument()
-		log.info "fileName: ${filePath}"
+		log.error "fileName: ${filePath}"
 		File f = new File(filePath)
 		response.setContentType("application/octet-stream")
 		response.setHeader("Content-disposition", "attachment;filename=CEFConnect.xls")
@@ -39,9 +39,25 @@ class CEFTickerController {
 	
 	
 	def tickerData() {
-		def tickerList = CEFTicker.findAll()
-		def json = '{ "aaData": [ '
+		Map<String, String> map = request.getParameterMap()
+		def value = map.get("sSearch")[0]
+		def order = map.get("sSortDir_0")[0]
+		def displayLength = map.get("iDisplayLength")[0]
+		def tickerList = null
+		if(value != null && !value.equals("")){
+			tickerList = CEFTicker.findAllByTickerLike("%" + value.toUpperCase() + "%", [sort: "ticker", order: order, max: displayLength])
+		} else {
+			tickerList = CEFTicker.findAll([sort: "ticker", order: order, max: displayLength])
+		}
+//		for(String parameter : map.keySet()){
+//			def value1 = map.get(parameter)
+//			log.error "key: ${parameter} value: ${value1}"
+//		}
+		def json = '{ '
 		if(tickerList != null){
+			json += '"iTotalRecords":' + '"' + CEFTicker.findAll().size() +'",' 
+			json += '"iTotalDisplayRecords":' + '"' + tickerList.size() +'",'
+			json += '"aaData": [' 
 			for(def i = 0; i < tickerList.size(); i++){
 				json += '["' + tickerList.get(i).ticker + '",'
 				json += '"' + tickerList.get(i).currentPremium + '",'
@@ -50,30 +66,15 @@ class CEFTickerController {
 				json += '"' + tickerList.get(i).threeYearPremium + '",'
 				json += '"' + tickerList.get(i).fiveYearPremium + '"],'
 			}
-			json = json.substring(0, json.length() -1)
+			if(tickerList.size() !=  0){
+				json = json.substring(0, json.length() -1) + "]"
+			} else {
+				json += "]"
+			}
 		}
-		json += "] }"
+		json += " }"
+		log.error "${json}"
 		render json
-	}
-	
-	private writeTable() {
-		def html = ""
-		def tickerList = CEFTicker.findAll()
-		if(tickerList != null){
-		html = "<table>"
-		for(def i = 0; i < tickerList.size(); i++){
-			html += "<tr>"
-			html += "<td>" + tickerList.get(i).ticker + "</td>"
-			html += "<td>" + tickerList.get(i).currentPremium + "</td>"
-			html += "<td>" + tickerList.get(i).sixMonthPremium + "</td>"
-			html += "<td>" + tickerList.get(i).oneYearPremium + "</td>"
-			html += "<td>" + tickerList.get(i).threeYearPremium + "</td>"
-			html += "<td>" + tickerList.get(i).fiveYearPremium + "</td>"
-			html += "</tr>"
-		}
-		html += "</table>"
-		render html
-		}
 	}
 	
 }

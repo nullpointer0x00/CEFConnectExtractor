@@ -1,6 +1,5 @@
 package org.beatnikstree.cefconnect
 
-import org.apache.commons.logging.Log;
 import org.beatnikstree.cefconnect.domain.CEFTicker
 import org.ccil.cowan.tagsoup.Parser;
 
@@ -34,7 +33,7 @@ class CEFTickerValueExtractor {
 			ticker.threeYearPremium = threeYearPremium
 			ticker.fiveYearPremium = fiveYearPremium
 			log.info " ${currentPremium} ${sixMonthPremium} ${oneYearPremium} ${threeYearPremium} ${fiveYearPremium}"
-			return ticker
+			ticker.save()
 		}
 	}
 	
