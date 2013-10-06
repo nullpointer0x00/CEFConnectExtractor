@@ -8,10 +8,20 @@
 			$('#dataTablesList').dataTable( {
         		"bProcessing": true,
         		"bServerSide": true,
-        		"sAjaxSource": "/CEFConnectExtractor/CEFTicker/tickerData"
+        		"sPaginationType": "two_button",
+        		"sAjaxSource": "/CEFConnectExtractor/CEFTicker/tickerData",
+        		"oLanguage": {
+         		"sLengthMenu": 'Display '+ '<select><option value="10">10</option>' + 
+         									'<option value="50">50</option>' +
+           									'<option value="100">100</option>'+
+           									'<option value="250">250</option>'+
+           									'<option value="500">500</option>'+
+           									'<option value="-1">All</option>'+
+           									'</select> records'
+       			}
     		} );
 		</g:javascript>
-    	<g:remoteLink action="refreshTickers" update="tickerList" onFailure="alert('Failure. Something went wrong.')">Refresh Tickers</g:remoteLink>
+    	<g:remoteLink action="refreshTickers" update="tickerList">Refresh Tickers</g:remoteLink>
     	<g:link action="downloadExcelDocument">Download Excel</g:link>
 	
 		<div id="tickerList">

@@ -1,6 +1,7 @@
 package org.beatnikstree.cefconnect
 
 import groovy.json.JsonSlurper
+import groovy.util.logging.Log4j
 
 import org.beatnikstree.cefconnect.domain.CEFTicker;
 import org.beatnikstree.cefconnect.util.StringUtil;
@@ -37,14 +38,6 @@ class CEFTickerExtractor {
 			valueExtractor.init()
 			valueExtractor.extract()
 		}
-//		for(int i = 0; i < 4 ; i++ ){
-//			def ticker = new CEFTicker()
-//			ticker.ticker = json.get(i).Ticker
-//			valueExtractor.ticker = ticker
-//			valueExtractor.init()
-//			valueExtractor.extract()
-//			valueExtractor.ticker.save()
-//		}
 	}
 	
 }

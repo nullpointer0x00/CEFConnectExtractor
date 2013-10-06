@@ -2,6 +2,7 @@ package org.beatnikstree.cefconnect
 
 import org.beatnikstree.cefconnect.domain.CEFTicker
 import org.ccil.cowan.tagsoup.Parser;
+import groovy.util.logging.Log4j
 
 @Grapes( @Grab('org.ccil.cowan.tagsoup:tagsoup:1.2') )
 class CEFTickerValueExtractor {
@@ -27,11 +28,26 @@ class CEFTickerValueExtractor {
 			def oneYearPremium = htmlParser.'**'.find{ it.@id == DISCOUNT_GRID_ID }.tr[2].td[1]
 			def threeYearPremium = htmlParser.'**'.find{ it.@id == DISCOUNT_GRID_ID }.tr[3].td[1]
 			def fiveYearPremium = htmlParser.'**'.find{ it.@id == DISCOUNT_GRID_ID }.tr[4].td[1]
-			ticker.currentPremium = currentPremium
-			ticker.sixMonthPremium = sixMonthPremium
-			ticker.oneYearPremium = oneYearPremium
-			ticker.threeYearPremium = threeYearPremium
-			ticker.fiveYearPremium = fiveYearPremium
+			log.info "${currentPremium.text()}"
+			if(currentPremium.text().replace("%", "").toDouble()){
+				ticker.currentPremium = currentPremium.text().replace("%", "").toDouble()
+			} else {
+				ticker.currentPremium = null
+			}
+			if(sixMonthPremium.text().replace("%", "").isDouble()){
+				ticker.sixMonthPremium = sixMonthPremium.text().replace("%", "").toDouble()
+			} else {
+				
+			}
+			if(oneYearPremium.text().replace("%", "").isDouble()){
+				ticker.oneYearPremium = oneYearPremium.text().replace("%", "").toDouble()
+			}
+			if(threeYearPremium.text().replace("%", "").isDouble()){
+				ticker.threeYearPremium = threeYearPremium.text().replace("%", "").toDouble()
+			}
+			if(fiveYearPremium.text().replace("%", "").isDouble()){
+				ticker.fiveYearPremium = fiveYearPremium.text().replace("%", "").toDouble()
+			}
 			log.info " ${currentPremium} ${sixMonthPremium} ${oneYearPremium} ${threeYearPremium} ${fiveYearPremium}"
 			ticker.save()
 		}

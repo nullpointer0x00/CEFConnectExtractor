@@ -3,13 +3,18 @@ package org.beatnikstree.cefconnect.domain
 class CEFTicker {
 
 	String ticker
-	String currentPremium
-	String sixMonthPremium
-	String oneYearPremium
-	String threeYearPremium
-	String fiveYearPremium 
+	Double currentPremium
+	Double sixMonthPremium
+	Double oneYearPremium
+	Double threeYearPremium
+	Double fiveYearPremium 
 	static constraints = {
 		ticker unique: true
+		currentPremium nullable: true
+		sixMonthPremium nullable: true
+		oneYearPremium nullable: true
+		threeYearPremium nullable: true
+		fiveYearPremium nullable: true
 	}
 	
 }
