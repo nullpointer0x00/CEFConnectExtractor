@@ -21,7 +21,7 @@ class CEFTickerExtractor {
 	def htmlParser
 	def json
 	
-	public init(){
+	public void start(){
 		def urlObj = new URL(jsonTickersUrl)
 		def urlConn = urlObj.openConnection()
 		def jsonString = StringUtil.getStringFromInputStream(urlConn.getInputStream())
@@ -32,10 +32,13 @@ class CEFTickerExtractor {
 	private void populateTickers(){
 		def valueExtractor = new CEFTickerValueExtractor()
 		json.each {
-			def ticker = new CEFTicker()
-			ticker.ticker = it.Ticker
+			def tickerName = it.Ticker
+			CEFTicker ticker = CEFTicker.find {ticker == tickerName}
+			if(ticker == null){
+				ticker = new CEFTicker()
+				ticker.ticker = tickerName
+			}
 			valueExtractor.ticker = ticker
-			valueExtractor.init()
 			valueExtractor.extract()
 		}
 	}

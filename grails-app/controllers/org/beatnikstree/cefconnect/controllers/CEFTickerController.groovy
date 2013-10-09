@@ -3,9 +3,12 @@ package org.beatnikstree.cefconnect.controllers
 import groovy.util.logging.Log4j
 
 import java.io.File;
+
 import org.beatnikstree.cefconnect.CEFTickerExtractor;
 import org.beatnikstree.cefconnect.CEFXlsDocumentBuilder
 import org.beatnikstree.cefconnect.domain.CEFTicker
+import org.beatnikstree.cefconnect.domain.CEFTickerRefreshLog
+import org.beatnikstree.cefconnect.domain.XlsDownloadLog
 
 class CEFTickerController {
 	
@@ -16,26 +19,42 @@ class CEFTickerController {
 	def list() {
 	} 
 	
-	def clearAll() {
-		CEFTicker.where { }.deleteAll()
-	}
-	
 	def refreshTickers() {
-		log.info "refreshTickers"
-		def extractor = new CEFTickerExtractor()
-		extractor.init()		
+		def refreshLog = new CEFTickerRefreshLog()
+		refreshLog.remoteAddress = request.getRemoteAddr()
+		refreshLog.startTime = new Date()
+		CEFTickerExtractor extractor = new CEFTickerExtractor()
+		extractor.start()
+		refreshLog.endTime = new Date()
+		refreshLog.processTime = refreshLog.endTime.getTime() - refreshLog.startTime.getTime()
+		refreshLog.validate()
+		if(refreshLog.hasErrors()){
+			refreshLog.errors.allErrors.each{log.error it}
+		} else {
+			refreshLog.save(flush:true)
+		}
+		
 	}
 	
 	def downloadExcelDocument() {
-		log.info "download Excel Document"
 		def documentBuilder = new CEFXlsDocumentBuilder()
 		documentBuilder.tickerList = CEFTicker.list()
 		def filePath = documentBuilder.createXlsxDocument()
-		log.info "fileName: ${filePath}"
 		File f = new File(filePath)
 		response.setContentType("application/octet-stream")
 		response.setHeader("Content-disposition", "attachment;filename=CEFConnect.xls")
 		response.outputStream << f.newInputStream()
+		
+		def downloadLog = new XlsDownloadLog()
+		downloadLog.date = new Date()
+		downloadLog.remoteAddress = request.getRemoteAddr()
+		downloadLog.validate()
+		if(downloadLog.hasErrors()){
+			downloadLog.errors.allErrors.each{log.error it}
+		} else {
+			downloadLog.save(flush:true)
+		}
+		
 	}
 	
 	
@@ -62,10 +81,6 @@ class CEFTickerController {
 			} else if (sortColumn == 5){
 				tickerList = CEFTicker.findAll([sort: "fiveYearPremium", order: order, max: displayLength])
 			} 
-		}
-		for(String parameter : map.keySet()){
-			def value1 = map.get(parameter)
-			log.info "key: ${parameter} value: ${value1}"
 		}
 		def json = '{ '
 		if(tickerList != null){
@@ -99,6 +114,14 @@ class CEFTickerController {
 		json += " }"
 		log.info "${json}"
 		render json
+	}
+	
+	def lastRefreshLog(){
+		def cefLog = CEFTickerRefreshLog.find("from CEFTickerRefreshLog order by id desc")
+	}
+	
+	def lastDownloadLog(){
+		def downloadLog = XlsDownloadLog.find("from XlsDownloadLog order by id desc")
 	}
 	
 }

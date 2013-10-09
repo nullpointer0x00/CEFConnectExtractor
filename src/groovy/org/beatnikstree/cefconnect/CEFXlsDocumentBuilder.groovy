@@ -38,6 +38,7 @@ class CEFXlsDocumentBuilder {
 		
 		//TODO: change this path.
 		File f = new File("CEFConnect.xls")
+		def path = f.getAbsolutePath()
 		FileOutputStream fos = new FileOutputStream(f)
 		wb.write(fos)
 		fos.close()

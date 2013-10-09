@@ -14,42 +14,41 @@ class CEFTickerValueExtractor {
 	String SUMMARY_GRID_ID = 'ContentPlaceHolder1_cph_main_cph_main_SummaryGrid'
 	String DISCOUNT_GRID_ID = 'ContentPlaceHolder1_cph_main_cph_main_ucPricing_DiscountGrid'
 	
-	public void init(){
+	public void extract(){
 		def tagsoupParser = new org.ccil.cowan.tagsoup.Parser()
 		def slurper = new XmlSlurper(tagsoupParser)
 		def url = BASE_URL + ticker.ticker
 		this.htmlParser = slurper.parse(url)
-	}
-	
-	public CEFTicker extract(){
 		if(htmlParser != null){
 			def currentPremium =  htmlParser.'**'.find{ it.@id == SUMMARY_GRID_ID }.tr[1].td[3]
 			def sixMonthPremium = htmlParser.'**'.find{ it.@id == DISCOUNT_GRID_ID }.tr[1].td[1]
 			def oneYearPremium = htmlParser.'**'.find{ it.@id == DISCOUNT_GRID_ID }.tr[2].td[1]
 			def threeYearPremium = htmlParser.'**'.find{ it.@id == DISCOUNT_GRID_ID }.tr[3].td[1]
 			def fiveYearPremium = htmlParser.'**'.find{ it.@id == DISCOUNT_GRID_ID }.tr[4].td[1]
-			log.info "${currentPremium.text()}"
 			if(currentPremium.text().replace("%", "").toDouble()){
 				ticker.currentPremium = currentPremium.text().replace("%", "").toDouble()
 			} else {
-				ticker.currentPremium = null
+				ticker.currentPremium = 0.0
 			}
 			if(sixMonthPremium.text().replace("%", "").isDouble()){
 				ticker.sixMonthPremium = sixMonthPremium.text().replace("%", "").toDouble()
-			} else {
-				
-			}
+			} 
 			if(oneYearPremium.text().replace("%", "").isDouble()){
 				ticker.oneYearPremium = oneYearPremium.text().replace("%", "").toDouble()
-			}
+			} 
 			if(threeYearPremium.text().replace("%", "").isDouble()){
 				ticker.threeYearPremium = threeYearPremium.text().replace("%", "").toDouble()
 			}
 			if(fiveYearPremium.text().replace("%", "").isDouble()){
 				ticker.fiveYearPremium = fiveYearPremium.text().replace("%", "").toDouble()
 			}
-			log.info " ${currentPremium} ${sixMonthPremium} ${oneYearPremium} ${threeYearPremium} ${fiveYearPremium}"
-			ticker.save()
+			ticker.updated = new Date()
+			ticker.validate()
+			if(ticker.hasErrors()){
+				ticker.errors.allErrors.each{log.error it}
+			 } else {
+			 	ticker.save(flush:true)
+			 }
 		}
 	}
 	

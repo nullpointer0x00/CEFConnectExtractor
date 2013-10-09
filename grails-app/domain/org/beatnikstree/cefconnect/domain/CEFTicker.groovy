@@ -8,6 +8,8 @@ class CEFTicker {
 	Double oneYearPremium
 	Double threeYearPremium
 	Double fiveYearPremium 
+	Date updated 
+	
 	static constraints = {
 		ticker unique: true
 		currentPremium nullable: true

@@ -23,9 +23,6 @@
 		</g:javascript>
     	<g:remoteLink action="refreshTickers" update="tickerList">Refresh Tickers</g:remoteLink>
     	<g:link action="downloadExcelDocument">Download Excel</g:link>
-	
-		<div id="tickerList">
-		</div>
 		
 		<table id="dataTablesList">
 		<thead>
